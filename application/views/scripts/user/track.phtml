@@ -1,0 +1,156 @@
+<script type='text/javascript'>
+	$(function(){
+		$('.datepicker_limited').focus();
+		
+	});
+</script>
+<form method='post' action=''>
+<div class='toolbar' style='height:auto !important; '>
+<div class='howto' style='width:300px; float:right;'>
+	Use the form to the left to enter a leave record. Once you've filled out all of the information, click the <b>Save & Continue</b> button.
+	
+	<br /><br />
+	<b>Tips:</b>
+		<ul>
+			<li>Use the TAB key to progress from field to field.</li>
+			<li>Press Shift+TAB to move backwards through the fields.</li>
+			<li>You can save the record and create a new record by pressing the Enter Key while your cursor is in any field.</li>
+		</ul>
+</div>
+<h1>Enter a Leave Record</h1>
+
+	<table>
+		<tr>
+		
+			<td >Start Date</td><td><input type='text' name='date' value="<?=date('Y-m-d');?>" class='datepicker_limited' style='width:120px;' readonly></td>
+				<td style='text-align:right;'>Total No. of Days</td><td >
+				<select name='days'>
+					<? 
+						$i = 1;
+						while($i <= 30){
+								echo "<option value='$i'>$i</option>";
+							$i++;
+						}
+					?>
+				</select>
+				</td>
+		</tr>
+		<tr>
+			<td>Employee</td><td colspan='3'>
+				<select name='employee' style='width:450px;'>
+					<option value="">Select an Employee</option>
+					<? 
+						$location = 0;
+					foreach($this->employees AS $employee){ 
+						if($location <> $employee->location){ ?>
+						<? if($location > 0){ ?>
+							</optgroup>
+							<? } ?>
+							
+							<optgroup label="<?=$this->locationName($employee->location);?>">
+							
+						<? 
+							$location = $employee->location;
+						}
+					?>
+							<option value="<?=$employee->id;?>"><?=$employee->lastname;?>, <?=$employee->firstname;?> (<?=$employee->position;?>)</option>
+					<? } ?>
+					</optgroup>
+				</select>
+				<input type='hidden' name='location' value="<?=$this->user->location;?>">
+			</td>
+		</tr>
+
+		
+		
+		<tr>
+			<td>Substitute</td><td colspan='3'>
+				<select name='substitute' style='width:450px;'>
+					<option value="">Select a Substitute</option>
+					<? 
+						$location = 0;
+					foreach($this->substitutes AS $substitute){ 
+					
+					?>
+							<option value="<?=$substitute->id;?>"><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
+					<? } ?>
+					</optgroup>
+				</select>
+			</td>
+		</tr>
+		
+
+		<tr>
+			<td>Reason</td><td colspan='2'>
+			
+				<script type='text/javascript'>
+					$(function(){
+						$('#reason').change(function(){
+							if($(this).val()=='Other - EXPLAIN'){
+								$('#explain').show();
+							} else {
+								$('#explain textarea').val('');
+								$('#explain').hide();
+							}
+						});
+					});
+				</script>
+				<select id='reason' name='reason' style='width:230px;'>
+				<option value="">Select a Reason</option>
+					<option>Sick</option>
+					<option>Personal</option>
+					<option>Vacation</option>
+					<option>Maternity</option>
+					<option>Vacancy</option>
+					<option>Prof. Learning</option>
+					<option>Jury Duty</option>
+					<option>Subpoena</option>
+					<option>Military</option>
+					<option>Religious Holiday</option>
+					<option>Br-S Spouse</option>
+					<option>Br-S Parent [In-Law]</option>
+					<option>Br-S Child [In-Law]</option>
+					<option>Br-S Sibling [In-Law]</option>
+					<option>Br-S Grandparent</option>
+					<option>Br-S Rel.-In-Care</option>
+					<option>Br-Personal</option>
+					<option>Other - EXPLAIN</option>
+					<option>Professional</option>
+					<option>Leave W/O Pay</option>
+					<option>W/C (Payroll Use Only)</option>
+					<option>SLB (Payroll Use Only)</option>
+				</select>
+				<div id='explain' style='display:none;'>
+					Please Explain:
+					<textarea name='notes' style='width:400px; height:30px;resize:none;'></textarea>
+				</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Emp % of Day</td><td colspan='2'>
+				<select name='percent' style='width:230px;'>
+					<option value="100">100%</option>
+					<option value="75">75%</option>
+					<option value="50">50%</option>
+					<option value="25">25%</option>
+				</select>
+			</td>
+			<td></td>
+		</tr>
+		<? if($this->user->admin ==1){ ?>
+		<tr>
+			<td>Leave Form</td>
+			<td colspan='2'>
+				<select name='leave_form'>
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+				</select>
+			</td>
+		</tr>
+		<? } ?>
+	</table>
+	<br /><br /><br /><br />
+	<input type='submit' value='Save & Continue'>
+</div>
+</form>

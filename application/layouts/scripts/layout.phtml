@@ -1,0 +1,110 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>LeaveTrax</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="/js/jquery-ui/js/jquery-ui-1.10.3.custom.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Patua+One' rel='stylesheet' type='text/css'>
+<link href='/js/jquery-ui/css/blitzer/jquery-ui-1.10.3.custom.css' rel='stylesheet' type='text/css'>
+  <?php echo $this->headLink()->appendStylesheet('/css/global.css') ?>
+  <script type='text/javascript'>
+  	$(function(){
+  		$('.datepicker').datepicker({'dateFormat':'yy-mm-dd'});
+  		$('.datepicker_limited').datepicker({'dateFormat':'yy-mm-dd', 'minDate':'<?=$this->siteSettings->minDate;?>', 'maxDate':'<?=$this->siteSettings->maxDate;?>',
+		  	onSelect: function(date) {
+		            $('select[name=days]').focus();
+		        }
+		    });
+  	});
+  </script>
+  <? if($this->error){ ?>
+		<script type='text/javascript'>
+				$(function(){
+					setTimeout('removeError()',5000);
+				});
+				function removeError(){
+					$('#error').slideUp();
+				}
+		</script>
+<? } ?>
+  <? if($this->success){ ?>
+		<script type='text/javascript'>
+				$(function(){
+					setTimeout('removeSuccess()',5000);
+					
+					
+					
+				});
+				function removeSuccess(){
+					$('#success').slideUp();
+				}
+				
+		</script>
+<? } ?>
+<body>
+	<? if($this->error){ ?>
+	<div id='error'>
+		<h1 style='text-align:center;'><?=$this->error;?></h1>
+	</div>
+	<? } ?>
+	<? if($this->success){ ?>
+	<div id='success'>
+		<h1 style='text-align:center;'><?=$this->success;?></h1>
+	</div>
+	<? } ?>
+	<div id='header_wrapper'>
+		<div id='header'>
+		<? if($this->user){ ?>
+			<div id='logo' style='margin-left:-15px;'>
+		<? } else { ?>
+			<div id='logo' style='text-align:center;'>
+		<? } ?>
+				<a href="/">
+					<img src="/images/logo.png" border='0'>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div id='nav_wrapper'>
+		
+			<? if(!$this->user){ ?>
+	
+			<? } else { ?>
+		<div id='nav' class='toolbar'>
+			<a href="/track" <? if($this->currentRoute=='track'){ ?> class='active' <? } ?>>Track</a>
+			<a href="/reports" <? if($this->currentRoute=='reports'){ ?> class='active' <? } ?>>Reports</a>
+				<a href="/editrecords" <? if($this->currentRoute=='editrecords'){ ?> class='active' <? } ?>>Records</a>
+				<? 
+				//ADMIN CONTROLS
+				if($this->user->admin == 1){ ?>
+				
+				<a href="/users" <? if($this->currentRoute=='users'){ ?> class='active' <? } ?>>Users</a>
+				<a href="/locations" <? if($this->currentRoute=='locations'){ ?> class='active' <? } ?>>Locations</a>
+				<a href="/employees" <? if($this->currentRoute=='employees'){ ?> class='active' <? } ?>>Employees</a>
+				<a href="/substitutes" <? if($this->currentRoute=='substitutes'){ ?> class='active' <? } ?>>Substitutes</a>
+				<a href="/site-settings" <? if($this->currentRoute=='sitesettings'){ ?> class='active' <? } ?>>Settings</a>
+				<? } ?>
+				<a href="/logout" style='float:right;'>Logout <? if(trim($this->user->name) <> ''){ ?> (<?=$this->user->name;?>) <? } ?></a>
+				</div>
+			<? } ?>
+	
+	</div>
+	<div id='content_wrapper'>
+		<div id='content'>
+			<?php echo $this->layout()->content ?>
+		</div>
+	</div>
+	<div id='footer_wrapper'>
+		<div id='footer'>
+			<a href="http://www.imaginationdata.com"> Imagination Data Solutions, Inc.</a>
+		</div>
+	</div>
+<? if($this->user){ ?>	
+<style type='text/css'>@import url('http://getbarometer.s3.amazonaws.com/assets/barometer/css/barometer.css');</style>
+<script src='http://getbarometer.s3.amazonaws.com/assets/barometer/javascripts/barometer.js' type='text/javascript'></script>
+<script type="text/javascript" charset="utf-8">
+  BAROMETER.load('56fBPp9nY7F2OGDdwmSyE');
+</script>
+<? } ?>
+</body>
+</html>

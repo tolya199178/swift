@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Zend Framework Default Application</title>
+</head>
+<body>
+<? if(1==1){ ?>
+  <h1>An error occurred</h1>
+  <h2><?php echo $this->message ?></h2>
+
+  <?php if (isset($this->exception)): ?>
+
+  <h3>Exception information:</h3>
+  <p>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+  </p>
+
+  <h3>Stack trace:</h3>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
+  </pre>
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), true) ?>
+  </pre>
+  <?php endif ?>
+<? } else { ?>
+<?
+	$this->pageTitle = "500 Not Found";
+?>
+<div style='width:800px; border:1px solid #e2e2e2; padding:30px; margin:auto;'>
+	<table width='100%' cellpadding='20'>
+		<tr>
+			<td><img src='/images/404.jpg' style='height:300px;'></td>
+			<td style='text-align:center;'><h1>Oops! Something went wrong!</h1>
+				We're sorry for any inconvenience this may have caused. If you continue to receive this message, please contact the System Administrator by using the feedback button to the left. Leave a detailed description of the events leading up to this error.<br><br>
+				<a href="/">Click Here to Return to the Homepage.</a>
+			</td>
+		</tr>
+	</table>
+</div>
+	
+	
+<? } ?>
+</body>
+</html>

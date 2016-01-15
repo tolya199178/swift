@@ -1,0 +1,171 @@
+<div class='toolbar' style='height:auto !important;'>
+	<h1>New substitute</h1>
+	<form method='post' action='' autocomplete='off'>
+	<table>
+		<tr>
+			<td>First Name</td><td><input type='text' name='firstname' style='width:200px;' value="<?=@$this->data['firstname'];?>"></td>
+			<td>Last Name</td><td><input type='text' name='lastname' style='width:200px;' value="<?=@$this->data['lastname'];?>"></td>
+		</tr>
+		<tr>
+			<td>Active</td><td>
+				<select name='active' style='width:200px;'>
+					<option value="1">Yes</option>
+					<option value="0" <? if($this->data['active'] == 1){ echo "selected"; } ?>>No</option>
+				</select>
+			</td>
+			<td>ID</td><td><input type='text' name='secondary_id' style='width:200px;' value="<?=@$this->data['secondary_id'];?>"></td>
+		</tr>
+		<tr>
+			<td>Payrate</td><td><input type='text' name='payrate' class='payrate' style='width:280px;' value="<?=@$this->data['payrate'];?>"></td>
+			<td>Certified</td><td>
+				<select name='certified'>
+					<option value="No">No</option>
+					<option value="Yes" <? if(@$this->data['certified'] == 'Yes'){ echo "selected"; } ?>>Yes</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>SSN</td><td>
+				<select name='ssn'>
+					<option value="Yes" >Yes</option>
+					<option value="No" <? if(@$this->data['ssn'] == 'No'){ echo "selected"; } ?>>No</option>
+					
+				</select>
+			</td>
+			<td></td><td></td>
+		</tr>
+	</table>
+	<br />
+	<input type='hidden' name='method' value='create'>
+	<input type='submit' value="Create substitute">
+	
+	</form>
+</div>
+
+
+ <?= $this->paginationControl($this->substitutes, 'Sliding', 'pagination_control.phtml'); ?>
+
+ <div style='padding:0px; position:relative; top:-20px;'>
+	<form method='get' action="/substitutes">
+		<input type='text' name='term' style='width:200px;' value="<?=@$_GET['term'];?>" placeholder="Search...">
+		<input type='submit' style='display:none;'>
+	</form>
+</div>
+
+ 	<table class='zebra'>
+ 		<tr style='background:#000; color:#fff;'>
+ 			<td>Name</td>
+			<td>Active</td>
+			<td>ID</td>
+			<td>Payrate</td>
+			<td>Certified</td>
+			<td>SSN</td>
+ 			<td>Edit</td>
+ 		</tr>
+ 		<? foreach($this->substitutes AS $substitute){ ?>
+ 			<tr id='view_row_<?=$substitute->id;?>'>
+ 				<td><?=$substitute->lastname;?>, <?=$substitute->firstname;?></td>
+				<td><? if($substitute->active == 1){ echo "Yes"; } else { echo "No"; } ?></td>
+				<td><?=$substitute->secondary_id;?></td>
+				<td><?=$substitute->payrate;?></td>
+				<td><?=$substitute->certified;?></td>
+				<td><?=$substitute->ssn;?></td>
+ 				<td><img src="/images/settings.png" style='cursor:pointer;' onClick="editRow(<?=$substitute->id;?>);"></td>
+ 			</tr>
+ 			<tr id='edit_row_<?=$substitute->id;?>' style='display:none;'>
+ 				<td colspan='7' style='padding:0;'>
+ 							<form method='post' action='' autocomplete='off' id='form_<?=$substitute->id;?>'>
+ 							
+ 							
+						 			<table>
+						 			<tr >
+						 			
+								 				<td>
+								 				First:<br /><input type='text' name='firstname' value="<?=$substitute->firstname;?>" style='width:120px;'>
+								 				
+								 				</td>
+								 				<td>
+								 				Last:<br /><input type='text' name='lastname' value="<?=$substitute->lastname;?>" style='width:120px;'>
+								 				
+								 				</td>
+								 				<td>
+								 				Active:<br />
+								 				<select name='active' style='width:100px;'>
+													
+														
+															<option value="1">Yes</option>
+															<option value="0" <? if($substitute->active == 0){ echo "selected"; } ?>>No</option>
+													</select>
+								 				
+								 				</td>
+								 				<td>
+								 				ID:<br /><input type='text' name='secondary_id' value="<?=$substitute->secondary_id;?>" style='width:120px;'>
+								 				Certified
+				<select name='certified'>
+					<option value="No">No</option>
+					<option value="Yes" <? if(@$substitute->certified == 'Yes'){ echo "selected"; } ?>>Yes</option>
+				</select>
+
+								 				
+								 				</td>
+								 				<td>
+								 				Payrate:<br /><input type='text' name='payrate' class='payrate' value="<?=$substitute->payrate;?>" style='width:100px;'>
+								 				
+								 				SSN
+				<select name='ssn'>
+					
+					<option value="Yes" >Yes</option>
+					<option value="No" <? if(@$substitute->ssn == 'No'){ echo "selected"; } ?>>No</option>
+				</select>
+								 				
+								 				</td>
+								 				
+
+		
+								 				<td style='text-align:center;'><img src="/images/check.png" style='cursor:pointer;' onClick="$(this).closest('form').submit();"><br />
+								 				<input type='button' value="Cancel" style='font-size:13px; padding:4px;' onClick="$('#edit_row_<?=$substitute->id;?>').hide();$('#view_row_<?=$substitute->id;?>').show();"></td>
+								 				<td><img src="/images/trash.png" style='cursor:pointer;' onClick="trash(<?=$substitute->id;?>);"></td>
+						 			
+						 			</tr>
+						 			</table>
+						 
+						 			<input type='hidden' name='id' value='<?=$substitute->id;?>'>
+						 			<input type='hidden' class='method' name='method' value='update'>
+						 				</form>
+						 				<form method='post' action='' id='delete_<?=$substitute->id;?>'>
+						 					<input type='hidden' name='id' value='<?=$substitute->id;?>'>
+						 					<input type='hidden' class='method' name='method' value='delete'>
+						 				</form>
+ 				</td>
+ 			</tr><tr></tr>
+ 			
+ 		<? } ?>
+ 	</table>
+ 
+  <?= $this->paginationControl($this->substitutes, 'Sliding', 'pagination_control.phtml'); ?>
+  
+  <script type='text/javascript'>
+  	$(function(){
+  		$(".account_number").keyup(function() {
+  var foo = $(this).val().split("-").join(""); // remove hyphens
+  foo = foo.match(new RegExp('.{1,4}', 'g')).join("-");
+  $(this).val(foo);
+});
+  	});
+  
+	function editRow(id){
+		$('#view_row_'+id).hide();
+		$('#edit_row_'+id).slideDown();
+	}
+	
+
+	function trash(id){
+		var sure = confirm("Delete this substitute? This cannot be undone.");
+		if(sure){
+			$('#delete_'+id).submit();
+		} else {
+			return false;
+		}
+	}
+
+</script	>

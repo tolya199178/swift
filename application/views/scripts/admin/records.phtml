@@ -1,0 +1,27 @@
+<h1>Leave Records</h1>
+<div class='howto' style='height:auto !important; '>
+ <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
+ <table class='zebra' style='font-size:.88em;'>
+ <tr style='background: #000; color:#fff; text-align:center;'>
+ 	<td>Date</td>
+ 	<td>Employee</td>
+ 	<td>Location</td>
+ 	<td>Substitute</td>
+ 	<td>Reason</td>
+ 	<td>%</td>
+ 	<td>Tracked</td>
+ </tr>
+<? foreach($this->records AS $record){ ?>
+ 	<tr style='text-align:center;'>
+ 		<td><?=$record->date;?></td>
+ 		<td><?=$this->employeeName($record->employee);?></td>
+ 		<td><?=$this->locationName($record->location);?></td>
+ 		<td><?=$this->substituteName($record->substitute);?></td>
+ 		<td><?=$record->reason;?><br /><?=nl2br($record->notes);?></td>
+ 		<td><?=$record->percent;?>%</td>
+ 		<td><?=$record->date_created;?></td>
+ 	</tr>
+ <? } ?>
+ </table>
+  <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
+</div>

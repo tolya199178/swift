@@ -1,0 +1,26 @@
+<? if($this->reportTitle){ ?>
+	<h1><?=$this->reportTitle;?></h1>
+<? } ?>
+<table width='100%' class='zebra'>
+<thead>
+<tr style='background:#000; color:#fff;'>
+
+	<? 
+
+		foreach($this->dataArray[0] AS $key => $value){
+			echo "<td>".$key."</td>";
+		}
+	?>
+</tr>
+</thead>
+	<?
+		foreach($this->dataArray AS $rowData){
+			foreach($rowData AS $key => $value){
+				
+				echo "<td>".$value."</td>";
+
+			}
+		?></tr><?
+		}
+?>
+</table>

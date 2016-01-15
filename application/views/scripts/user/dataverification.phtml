@@ -1,0 +1,95 @@
+<?
+$method = $this->method;
+$totalData = $this->totalData;
+?>
+<? if($method == 'html' || $method == 'pdf'){?>
+	<style type='text/css'>
+		#page{
+			font-family: Arial, sans-serif;
+		}
+	</style>
+	<div id='page'>
+		
+		<table style='width:100%;'>
+	 		<tr>
+	 			<td>
+						<h1>Data Verification (<? if($this->start && $this->end){ ?><?=date('M d, Y',strtotime($this->start));?> - <?=date('M d, Y',strtotime($this->end));?><? } else { ?><?=date('M Y',strtotime($this->start));?><? } ?>)</h1>
+				</td>
+				<? if($method == 'pdf'){ ?>
+	 			<td style='text-align:right;'><img style='height:80px;' src="<?=APPLICATION_PATH."/../public/images/logo.png";?>"></td>
+	 				<? } ?> 
+	 		</tr>
+	 	</table>
+		<? foreach($totalData AS $data){ ?>
+				<? if(count($data['records']) > 0){ ?>
+				<br />
+				<div style='border:1px solid #000; padding:5px; background:#6a6a6a; color:#fff;'>
+					<table>
+						<tr>
+							
+							<td><spamn style='font-size:18px;'><?=$data['employee']['lastname'];?>, <?=$data['employee']['firstname'];?></span></td>
+							<td style='padding-left:15px;'>ID: <?=$data['employee']['cp_id'];?></td>
+						</tr>
+					</table>
+				</div>
+				<table width='100%' style='border-collapse:collapse; background: #fff;' border='1'>
+						<tr style='background: #000; color:#fff;'>
+							<td>Date</td>
+							<td>Reason</td>
+							<td>Emp %</td>
+							<td>Substitute</td>
+							<td>Location</td>
+						</tr>
+					<? foreach($data['records'] AS $record){ ?>
+						<tr>
+							<td><?=$record->date;?></td>
+							<td><?=$record->reason;?><? if($record->reason == 'Other - EXPLAIN'){ echo " : ".$record->notes; } ?></td>
+							<td><?=$record->percent;?></td>
+							<td><?=$this->substituteName($record->substitute);?></td>
+							<td><?=$this->locationName($record->location);?></td>
+						</tr>
+					<? } ?>
+				</table>
+			<? } ?>
+		<? } ?>
+	</div>	
+	
+
+<?
+}
+
+if($method=='csv'){
+		$csv = "";
+		$csv .="Date,ID,Last Name,First Name,Reason,Emp %,SubLast,SubFirst,Location\n";
+			 foreach($totalData AS $data){ 
+				if(count($data['records']) > 0){ 
+		
+							
+					foreach($data['records'] AS $record){ 
+						
+							$csv .= $record->date.",";
+							$csv .= $data['employee']['cp_id'].",";
+							$csv .= $data['employee']['lastname'].","; 
+							$csv .= $data['employee']['firstname'].",";
+							$csv .= $record->reason;
+							if($record->reason == 'Other - EXPLAIN'){ 
+								$csv .= " : ".str_replace(",","",$record->notes).",";
+							} else {
+								$csv .= ",";
+							}
+							$csv .= $record->percent.",";
+							$csv .= $this->substituteName($record->substitute).",";
+							$csv .= $this->locationName($record->location);
+							$csv .= "\n";
+						
+					 } 
+					
+			 } 
+		} 
+
+			header('Content-Type: application/csv');
+				header('Content-Disposition: attachment; filename=Data-Verification-'.date('M Y',strtotime($this->start))."-".date('Y-m-d').".".$method);
+				header('Pragma: no-cache');
+	echo $csv;
+
+}

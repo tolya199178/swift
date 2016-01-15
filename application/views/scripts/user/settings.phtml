@@ -1,0 +1,16 @@
+<h1>Application Settings</h1>
+<br />
+<div class='toolbar' style='height:auto !important; '>
+	<form method='post' action=''>
+	<table>
+		<tr>
+			<td>Min. Date</td><td><input type='text' class='datepicker' name='minDate' value="<?=$this->settings->minDate;?>"></td>
+		</tr>
+		<tr>
+			<td>Max. Date</td><td><input type='text' class='datepicker' name='maxDate' value="<?=$this->settings->maxDate;?>"></td>
+		</tr>
+	</table>
+	<br />
+	<input type='submit' value='Save & Continue'>
+	</form>
+</div>

@@ -1,0 +1,117 @@
+<script type='text/javascript'>
+	function trash(id){
+		var sure = confirm("Delete this user? This cannot be undone.");
+		if(sure){
+			$('#delete_'+id).submit();
+		} else {
+			return false;
+		}
+	}
+</script>	
+
+<div class='toolbar' style='height:auto !important;'>
+	<h1>New User</h1>
+	<form method='post' action='' autocomplete='off'>
+	<table>
+		<tr>
+			<td>Name</td><td><input type='text' name='name' style='width:200px;' value="<?=@$this->data['name'];?>"></td>
+			<td style='padding-left:30px;'>Email</td><td><input type='text' name='email' style='width:200px;'  value="<?=@$this->data['email'];?>"></td>
+		</tr>
+		<tr>
+			<td>Password</td><td><input type='password' name='password' style='width:200px;' ></td>
+			<td style='padding-left:30px;'>Admin</td><td>
+				<select name='admin'>
+					<option value='0'>No</option>
+					<option value='1'>Yes</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			
+			<td>Location</td><td colspan='4'>
+				<select name='location' style='width:600px;'>
+					<option value="">Select A Location</option>
+					<? foreach($this->locations AS $location){ ?>
+						<option value="<?=$location->id;?>"><?=$location->name;?></option>
+					<? } ?>
+				</select>
+			</td>
+		</tr>
+		
+	</table>
+	<br />
+	<input type='hidden' name='method' value='create'>
+	<input type='submit' value="Create User">
+	
+	</form>
+</div>
+
+ <?= $this->paginationControl($this->users, 'Sliding', 'pagination_control.phtml'); ?>
+ 	<table class='zebra'>
+ 		<tr style='background:#000; color:#fff;'>
+ 			<td>Name</td>
+ 			<td>Email</td>
+ 			<td>Location</td>
+ 			<td>Admin</td>
+ 			<td>Edit</td>
+ 		</tr>
+ 		<? foreach($this->users AS $user){ ?>
+ 			<tr id='view_row_<?=$user->id;?>'>
+ 				<td><?=$user->name;?></td>
+ 				<td><?=$user->email;?></td>
+ 				<td><?=$this->locationName($user->location); ?></td>
+ 				<td><? if($user->admin == 1){ echo "Yes"; } else { echo "No"; };?></td>
+ 				<td><img src="/images/settings.png" style='cursor:pointer;' onClick="editRow(<?=$user->id;?>);"></td>
+ 			</tr>
+ 			<tr id='edit_row_<?=$user->id;?>' style='display:none;'>
+ 				<td colspan='5' style='padding:0;'>
+ 							<form method='post' action='' autocomplete='off' id='form_<?=$user->id;?>'>
+						 			<table>
+						 			<tr >
+						 			
+								 				<td>Name:<br /><input type='text' name='name' value="<?=$user->name;?>" style='width:120px;'></td>
+								 				<td>Email:<br /><input type='text' name='email' value="<?=$user->email;?>"  style='width:120px;'></td>
+								 				<td>New Password:<br /><input type='password' name='password' value=""  style='width:120px;'></td>
+								 				<td>Location:<br /><select name='location' style='width:120px;'>
+												<option value="">Location</option>
+												<? foreach($this->locations AS $location){ 
+													if($user->location == $location->id){
+														$selected = 'selected';
+													} else {
+														$selected = '';
+													}
+												?>
+													<option value="<?=$location->id;?>" <?=$selected;?>><?=$location->name;?></option>
+												<? } ?>
+											</select></td>
+								 				<td>Admin:<br /><select name='admin' style='width:80px;'>
+												<option value="0">No</option>
+												<option value="1" <? if($user->admin == 1){ echo "selected"; } ?>>Yes</option>
+											</select></td>
+								 				<td style='text-align:center;'><img src="/images/check.png" style='cursor:pointer;' onClick="$(this).closest('form').submit();">
+								 				<input type='button' value="Cancel" style='font-size:13px; padding:4px;' onClick="$('#edit_row_<?=$user->id;?>').hide();$('#view_row_<?=$user->id;?>').show();"></td>
+								 				<td><img src="/images/trash.png" style='cursor:pointer;' onClick="trash(<?=$user->id;?>);"></td>
+						 			
+						 			</tr>
+						 			</table>
+						 			<input type='hidden' name='id' value='<?=$user->id;?>'>
+						 			<input type='hidden' class='method' name='method' value='update'>
+						 				</form>
+						 				<form method='post' action='' id='delete_<?=$user->id;?>'>
+						 					<input type='hidden' name='id' value='<?=$user->id;?>'>
+						 					<input type='hidden' class='method' name='method' value='delete'>
+						 				</form>
+ 				</td>
+ 			</tr><tr></tr>
+ 			
+ 		<? } ?>
+ 	</table>
+ 
+  <?= $this->paginationControl($this->users, 'Sliding', 'pagination_control.phtml'); ?>
+  
+  <script type='text/javascript'>
+	function editRow(id){
+		$('#view_row_'+id).hide();
+		$('#edit_row_'+id).slideDown();
+	}
+</script	>

@@ -1,0 +1,620 @@
+<style type='text/css'>
+#header, #content, #footer{
+	width:auto;
+}
+select{
+	font-size:12px !important;
+}
+</style>
+<script>
+	function deleteRecords(){
+		var ids = "";
+		$('.recordcheck:checked').each(function(){
+			ids  = ids + $(this).attr('data-id')+",";
+		});
+		var sure = confirm("Delete these records?");
+		if(sure){
+			$.post("/editrecords",{ method: 'remove', ids: ids },function(data){
+				window.location.href=window.location.href;
+			});
+		} else {
+			return false;
+		}
+	}
+
+	function format_number(text)
+  	{
+		var text = text.split("-").join(""); // remove hyphens
+  		var letters = text.split("");
+    	  var account_number = letters[0];
+    	  	if(letters[1] != undefined){ account_number = account_number+"-"+letters[1] }
+    	    if(letters[2] != undefined){ account_number = account_number+letters[2] }
+    	    if(letters[3] != undefined){ account_number = account_number+letters[3] }
+    	    if(letters[4] != undefined){ account_number = account_number+"-"+letters[4] }
+    	    if(letters[5] != undefined){ account_number = account_number+"-"+letters[5] }
+    	     if(letters[6] != undefined){ account_number = account_number+letters[6] }
+    	      if(letters[7] != undefined){ account_number = account_number+letters[7] }
+    	       if(letters[8] != undefined){ account_number = account_number+letters[8] }
+    	       if(letters[9] != undefined){ account_number = account_number+"-"+letters[9] }
+    	     if(letters[10] != undefined){ account_number = account_number+letters[10] }
+    	      if(letters[11] != undefined){ account_number = account_number+letters[11] }
+    	       if(letters[12] != undefined){ account_number = account_number+letters[12] }
+    	       if(letters[13] != undefined){ account_number = account_number+"-"+letters[13] }
+    	     if(letters[14] != undefined){ account_number = account_number+letters[14] }
+    	      if(letters[15] != undefined){ account_number = account_number+letters[15] }
+    	       if(letters[16] != undefined){ account_number = account_number+letters[16] }
+    	       if(letters[17] != undefined){ account_number = account_number+letters[17] }
+    	       if(letters[18] != undefined){ account_number = account_number+"-"+letters[18] }
+    	     if(letters[19] != undefined){ account_number = account_number+letters[19] }
+    	      if(letters[20] != undefined){ account_number = account_number+letters[20] }
+    	       if(letters[21] != undefined){ account_number = account_number+letters[21] }
+    	       if(letters[22] != undefined){ account_number = account_number+"-"+letters[22] }
+
+    	  return account_number;
+  	}
+
+</script>
+
+<div class='howto' style='height:auto !important; '>
+<div style='float:left;'>
+	<input type='button' value='Delete Selected' onClick="deleteRecords()">
+</div>
+ <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
+ <div style='float:right;'>
+ <form method='post' action=''>
+ 	Go to Page: <input type='text' name='gotopage' style='width:30px;' value="<?=$this->page;?>"> <input type='submit' value='Go' style='padding:5px; font-size:14px;'>
+ 	<input type='hidden' name='method' value='skipToPage'>
+ </form>
+ </div>
+
+
+ <div style='padding:10px; float:left;'>
+ 	<form method='post' action="">
+ 			<input type='hidden' name='method' value='search' >
+<table>
+	<tr>
+		<td>
+			<b>Start Date</b><br />
+			<input type='text' name='startdate' style='width:150px;' class='datepicker' value="<?=@$this->search->startdate;?>" readonly>
+		</td>
+		<td>
+			<b>End Date</b><br />
+			<input type='text' name='enddate' style='width:150px;' class='datepicker'  value="<?=@$this->search->enddate;?>"  readonly>
+		</td>
+		 <? if($this->user->admin == 1){ ?>
+		<td>
+			<b>Location</b><br />
+			<select name='location' style='width:150px;'>
+				<option value="">Any</option>
+					<? 
+					
+					foreach($this->locations AS $location){ 
+					
+					?>
+							<option value="<?=$location->id;?>" <? if(@$this->search->location == $location->id){ echo "selected"; } ?>><?=$this->locationName($location->id);?></option>
+					<? } ?>
+					</optgroup>
+				</select>
+		</td>
+ <? } ?>
+
+
+		<td>
+			<b>Employee</b><br />
+			
+			<select name='employee' style='width:150px;'>
+			<option value="">Any</option>
+					<? foreach($this->employees AS $employee){ 	?>
+							<option value="<?=$employee->id;?>" <? if(@$this->search->employee == $employee->id){ echo "selected"; } ?>><?=$employee->lastname;?>, <?=$employee->firstname;?></option>
+					<? } ?>
+					</optgroup>
+				</select>
+ 			
+		</td>
+		<td>
+			<b>Substitute</b><br />
+			<select name='substitute' style='width:150px;'>
+				<option value="">Any</option>
+					<? $location = 0;
+					foreach($this->substitutes AS $substitute){  ?>
+							<option value="<?=$substitute->id;?>" <? if(@$this->search->substitute == $substitute->id){ echo "selected"; } ?>><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
+					<? } ?>
+					</optgroup>
+				</select>
+		</td>
+		<td>
+		<b>Reason</b><br />
+ 		<select id='reason' name='reason' style='width:100px;'>
+ 					<option value="">Any</option>
+					<option <? if(@$this->search->reason == 'Sick'){ echo "selected"; } ?>>Sick</option>
+					<option <? if(@$this->search->reason == 'Personal'){ echo "selected"; } ?>>Personal</option>
+					<option <? if(@$this->search->reason == 'Vacation'){ echo "selected"; } ?>>Vacation</option>
+					<option <? if(@$this->search->reason == 'Maternity'){ echo "selected"; } ?>>Maternity</option>
+					<option <? if(@$this->search->reason == 'Vacancy'){ echo "selected"; } ?>>Vacancy</option>
+					<option <? if(@$this->search->reason == 'Prof. Learning'){ echo "selected"; } ?>>Prof. Learning</option>
+					<option <? if(@$this->search->reason == 'Jury Duty'){ echo "selected"; } ?>>Jury Duty</option>
+					<option <? if(@$this->search->reason == 'Subpoena'){ echo "selected"; } ?>>Subpoena</option>
+					<option <? if(@$this->search->reason == 'Military'){ echo "selected"; } ?>>Military</option>
+					<option <? if(@$this->search->reason == 'Religious Holiday'){ echo "selected"; } ?>>Religious Holiday</option>
+					<option <? if(@$this->search->reason == 'Br-S Spouse'){ echo "selected"; } ?>>Br-S Spouse</option>
+					<option <? if(@$this->search->reason == 'Br-S Parent [In-Law]'){ echo "selected"; } ?>>Br-S Parent [In-Law]</option>
+					<option <? if(@$this->search->reason == 'Br-S Child [In-Law]'){ echo "selected"; } ?>>Br-S Child [In-Law]</option>
+					<option <? if(@$this->search->reason == 'Br-S Sibling [In-Law]'){ echo "selected"; } ?>>Br-S Sibling [In-Law]</option>
+					<option <? if(@$this->search->reason == 'Br-S Grandparent'){ echo "selected"; } ?>>Br-S Grandparent</option>
+					<option <? if(@$this->search->reason == 'Br-S Rel.-In-Care'){ echo "selected"; } ?>>Br-S Rel.-In-Care</option>
+					<option <? if(@$this->search->reason == 'Br-Personal'){ echo "selected"; } ?>>Br-Personal</option>
+					<option <? if(@$this->search->reason == 'Other - EXPLAIN'){ echo "selected"; } ?>>Other - EXPLAIN</option>
+					<option <? if(@$this->search->reason == 'Professional'){ echo "selected"; } ?>>Professional</option>
+					<option <? if(@$this->search->reason == 'Leave W/O Pay'){ echo "selected"; } ?>>Leave W/O Pay</option>
+					<option <? if(@$this->search->reason == 'W/C (Payroll Use Only)'){ echo "selected"; } ?>>W/C (Payroll Use Only)</option>
+					<option <? if(@$this->search->reason == 'SLB (Payroll Use Only)'){ echo "selected"; } ?>>SLB (Payroll Use Only)</option>
+				</select>
+ 		</td>
+ 		 <? if($this->user->admin == 1){ ?>
+ 		<td>
+ 		<b>Leave Form</b><br />
+ 			<select name='leave_form' style='width:100px;'>
+ 				<option value=''>Any</option>
+ 				<option value='0' <? if($this->search->leave_form === 0){ echo "selected"; } ?>>No</option>
+ 				<option value='1' <? if($this->search->leave_form == 1){ echo "selected"; } ?>>Yes</option>
+ 			</select>
+ 		</td>
+ 		 <? } ?>
+ 		<td>
+ 		<b>Acct #1</b><br />
+ 			<input type='text' name='acct' style='width:100px;'>
+
+ 		</td>
+		<td><br />
+		<input type='submit' value='Filter' style='margin-top:5px;padding:5px; font-size:14px;'>
+
+		<a href="/editrecords">
+		<input type='button' style='margin-top:5px;padding:5px; font-size:14px;' value="Clear">
+		</a>
+		</td>
+	</tr>
+</table> 			
+ 			
+ 	</form>
+ </div>
+
+  <div style='clear:both;'></div>
+ <table class='zebra' style='font-size:.88em;'>
+ <tr style='background: #000; color:#fff; text-align:center;'>
+ 	<td></td>
+ 	<td><a href='<? if($this->sort == 'date' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'date','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'date','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+ 			Date
+ 		</a>
+ 	</td>
+ 	<td><a href='<? if($this->sort == 'employee' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'employee','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'employee','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Employee
+		</a>
+	</td>
+ 	<? if($this->user->admin ==1){ ?>
+ 	<td><a href='<? if($this->sort == 'location' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'location','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'location','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Location
+		</a>
+	</td>
+ 	<? } ?>
+ 	<td><a href='<? if($this->sort == 'substitute' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'substitute','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'substitute','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Substitute
+		</a>
+	</td>
+ 	<td style='color:#fff;'>Pay Rate</td>
+ 	<td><a href='<? if($this->sort == 'reason' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'reason','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery));  
+ 					} else { 
+						echo $this->url(array('sort'=>'reason','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Reason
+		</a>
+	</td>
+	<td><a href='<? if($this->sort == 'leave_form' && $this->sorttype=='asc'){
+ 						echo $this->url(array('sort'=>'leave_form','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'leave_form','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Leave Form
+		</a>
+	</td>
+ 	<td><a href='<? if($this->sort == 'percent' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'percent','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'percent','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						%
+		</a>
+	</td> 	
+ 	<td><a href='<? if($this->sort == 'acct' && $this->sorttype=='asc'){ 
+ 						echo $this->url(array('sort'=>'acct','sorttype'=>'desc','page'=>'1','search'=>$this->searchQuery)); 
+ 					} else { 
+						echo $this->url(array('sort'=>'acct','sorttype'=>'asc','page'=>'1','search'=>$this->searchQuery)); } ?>' style='color:#fff;'>
+						Acct / Notes
+		</a>
+	</td>
+ 	<td></td>
+ 	
+ </tr>
+ 
+ <? if($this->user->admin == 1): ?>
+ 	<? $colspan = 9;?>
+ <?php else:?>
+ 	<? $colspan = 7;?>
+ <? endif; ?>
+ <tr style='text-align:center;'>
+ 	<td><input type="checkbox" id="select_all" /></td>
+ 	<td style="text-align: left;font-weight:bold;">
+ 		<span>SELECT ALL </span>
+ 	</td>
+ 	<td colspan="<?=$colspan;?>" style="text-align: right;">
+ 		<input type="button" value='Save All' style='font-size:15px; padding:3px;width: 120px;' id="save_all" /> 	
+ 	</td> 
+ </tr> 
+<?$timeMinDate = strtotime($this->siteSettings->minDate);?> 
+<? foreach($this->records AS $record){
+	
+	$editRwo = true;
+	$timeDate = strtotime($record->date);
+	
+	if($this->user->admin == 0)
+	{		
+		if($record->location != $this->user->location || $timeDate < $timeMinDate)
+			$editRwo = false;
+	}	
+	?>
+ 	<tr style='text-align:center;'>
+ 		<td><input type='checkbox' class='recordcheck' data-id='<?=$record->id;?>'></td>
+ 		<form method='post' action=''> 		
+ 		<? if($editRwo):?> 			 	
+ 			<input type='hidden' name='id' value="<?=$record->id;?>">
+ 		<? endif;?> 		
+ 		<td>
+ 			<? if($editRwo):?>
+ 				<input type='text' name='date'  style='width:65px; font-size:10px;'  value="<?=$record->date;?>">
+ 			<? else:?>
+ 				<?=$record->date;?>
+ 			<? endif;?> 			
+ 		</td>
+ 		<td>
+ 		<? if($editRwo):?>
+ 			<select name='employee' style='width:100px;' >
+	
+					<? foreach($this->employees AS $employee){?>
+							<option value="<?=$employee->id;?>" <? if($record->employee == $employee->id){ echo "selected"; } ?>><?=$employee->lastname;?>, <?=$employee->firstname;?></option>
+					<? } ?>
+					</optgroup>
+			</select>
+		<? else:?>	
+			<?php echo $record->elastname.', '.$record->efirstname;?>
+		<? endif;?>
+ 		</td>
+ 		<? if($this->user->admin ==1){ ?>
+ 		<td>
+ 		
+ 			<select name='location' style='width:90px;' >	
+					<? foreach($this->locations AS $location){?>
+							<option value="<?=$location->id;?>" <? if($record->location == $location->id){ echo "selected"; } ?>><?=$this->locationName($location->id);?></option>
+					<? } ?>
+					</optgroup>
+			</select>
+			
+ 		</td>
+ 	
+ 		<? } ?>
+ 			<td>
+ 				<? if($editRwo):?>
+ 					<select name='substitute' style='width:100px;' >	
+						<? 
+							$location = 0;
+						foreach($this->substitutes AS $substitute){ 
+						
+						?>
+								<option value="<?=$substitute->id;?>" <? if($record->substitute == $substitute->id){ echo "selected"; } ?>><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
+						<? } ?>
+						</optgroup>
+					</select>
+ 				<? else:?>
+ 					<?php echo $record->slastname.', '.$record->sfirstname;?>
+ 				<? endif;?> 				
+ 			</td>
+ 			<td>
+ 				<? if($editRwo):?>
+ 					<input type='text' name='payrate' value="<? if(trim($record->payrate) <> '' && $record->payrate <> NULL){ echo $record->payrate; } else { echo $this->SubstitutePayrate($record->substitute); } ?>" style='width:40px;'>
+ 				<?php else:?>
+ 					<? if(trim($record->payrate) <> '' && $record->payrate <> NULL){ echo $record->payrate; } else { echo $this->SubstitutePayrate($record->substitute); } ?>
+ 				<? endif;?>	
+ 			</td> 			
+ 			<td>
+ 				<? if($editRwo):?>
+ 				<select id='reason' name='reason'  style='width:100px;'  >
+ 					<option><?=$record->reason;?></option>
+					<option>Sick</option>
+					<option>Personal</option>
+					<option>Vacation</option>
+					<option>Maternity</option>
+					<option>Vacancy</option>
+					<option>Prof. Learning</option>
+					<option>Jury Duty</option>
+					<option>Subpoena</option>
+					<option>Military</option>
+					<option>Religious Holiday</option>
+					<option>Br-S Spouse</option>
+					<option>Br-S Parent [In-Law]</option>
+					<option>Br-S Child [In-Law]</option>
+					<option>Br-S Sibling [In-Law]</option>
+					<option>Br-S Grandparent</option>
+					<option>Br-S Rel.-In-Care</option>
+					<option>Br-Personal</option>
+					<option>Other - EXPLAIN</option>
+					<option>Professional</option>
+					<option>Leave W/O Pay</option>
+					<option>W/C (Payroll Use Only)</option>
+					<option>SLB (Payroll Use Only)</option>
+				</select>
+				<? else:?>
+ 					<?=$record->reason;?>
+				<? endif;?>
+ 		</td>
+ 		<td>
+ 			<? if($editRwo):?>
+ 				<select name='leave_form' >
+	 				<option value='0'>No</option>
+	 				<option value='1' <? if($record->leave_form == 1){ echo "selected"; } ?>>Yes</option>
+	 			</select>
+	 		<? else: ?>
+ 				<? if($record->leave_form == 1):?>
+ 					<? echo 'Yes';?>
+ 				<? else:?>
+ 					<? echo 'No';?>
+ 				<? endif;?>
+ 			<? endif;?> 			
+ 		</td>
+ 		<td style="vertical-align: top;">
+ 			<? if($editRwo):?>
+ 				<b>%1</b>&nbsp;&nbsp;<input type='text' name='percent' value="<?=$record->percent;?>" style='width:40px;font-size:10px;'>
+ 				<br />
+ 				<b>%2</b>&nbsp;&nbsp;<input type='text' name='percent_two' value="<?=$record->percent_two;?>" style='width:40px;font-size:10px;margin-top:3px;'>
+ 			<? else:?>
+ 				<b>%1</b>&nbsp;&nbsp;<?=$record->percent;?>
+ 				<?php if(!empty($record->percent_two)):?>
+	 				<br />
+	 				<b>%2</b>&nbsp;&nbsp;<?=$record->percent_two;?>
+ 				<?php endif;?>
+ 			<?php endif;?> 		
+ 		</td> 		
+ 		<td> 			 		
+ 			<?
+ 				if($record->substitute == 129)
+ 				{
+ 					$nroAcct = '5-000-0-0000-0000-00000-0000-0';
+ 				}
+ 				else 
+ 				{
+ 					if(trim($record->acct) <> ''){ $nroAcct = $record->acct; } else { $nroAcct = $record->account_number; }
+ 				}
+ 				
+ 				if(trim($record->acct_two) <> ''){ $nroAcctTwo = trim($record->acct_two); } else { $nroAcctTwo = trim($record->account_number_two); }
+ 			?>
+ 			
+ 			<? if($editRwo):?>
+ 				<b>#1</b>&nbsp;&nbsp;<input type='text' name='acct' class='acct_check' maxlength='30' style='font-size:10px; width:165px;' value="<?=$nroAcct?>" onkeyup="my_format_number(this)" >
+ 				<br /> 				
+ 				<b>#2</b>&nbsp;&nbsp;<input type='text' name='acct_two' class='acct_check' maxlength='30' style='font-size:10px; width:165px;margin-top:3px;' value="<?=$nroAcctTwo?>" onkeyup="my_format_number(this)" >
+ 			<? else:?> 				
+ 				<b>#1</b>&nbsp;&nbsp;<label class="jqAccount" ><?=$nroAcct?></label>
+ 				<?php if(!empty($nroAcctTwo)):?>
+	 				<br /> 				
+	 				<b>#2</b>&nbsp;&nbsp;<label class="jqAccount" ><?=$nroAcctTwo?></label>
+ 				<?php endif;?>
+ 			<? endif;?>
+ 			<br />
+ 			<? if($editRwo):?>
+ 				<textarea name='notes' style="margin-top:3px;" ><?=nl2br($record->notes);?></textarea>
+ 			<? else:?>
+ 				<?=nl2br($record->notes);?>
+ 			<? endif;?>
+ 		</td>
+ 		<td>
+ 		<? if($editRwo):?>
+ 			<input type='submit' value='Save' style='font-size:12px; padding:3px;'> 			
+ 		<? endif; ?>
+ 		</td>
+
+ 		</form>
+ 	</tr>
+ <? } ?>
+ </table>
+  <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
+</div>
+
+<?php $redirectUri = $this->serverUrl() . $this->baseUrl() . $this->url(array('controller' => 'index', 'action' => 'post-authorize'));?>
+<input type="hidden" name="current_url" id="current_url" value="<? echo $redirectUri; ?>" />
+
+<form action="<?php echo $this->url(array('controller' => 'user', 'action' => 'edit-all-records'), 'default');?>" method="post" style="display:none" id="hform">
+	
+</form>
+
+<script type='text/javascript'>
+$(function(){
+
+	$("#save_all").click(function() {
+		
+		$("#hform").html("");
+		
+		$(".zebra").find('input[name="id"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "id[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="date"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "date[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('select[name="employee"]').each(function(i, o){
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "employee[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('select[name="location"]').each(function(i, o){
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "location[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('select[name="substitute"]').each(function(i, o){
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "substitute[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('select[name="reason"]').each(function(i,o){
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "reason[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="percent"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "percent[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="percent_two"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "percent_two[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('select[name="leave_form"]').each(function(i,o){
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "leave_form[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('textarea[name="notes"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "notes[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="acct"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "acct[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="acct_two"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "acct_two[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		$(".zebra").find('input[name="payrate"]').each(function(i, o) {
+			var $input = $("<input/>");
+			$input.attr("type", "hidden");
+			$input.attr("name", "payrate[]");
+			$input.val($(o).val());
+			
+			$("#hform").append($input);
+		});
+
+		var $input = $("<input/>");
+		$input.attr("type", "hidden");
+		$input.attr("name", "current_url");
+		$input.val($('#current_url').val());
+		$("#hform").append($input);
+		
+		
+		$("#hform").submit();
+	});
+
+
+	$("#select_all").change(function () {
+		if($(this).prop("checked"))
+		{
+			$(".recordcheck").prop("checked", true);
+		}
+		else
+		{
+			$(".recordcheck").prop("checked", false);
+		}
+	});
+
+	$('.acct_check').each(function(){
+		var va = $(this).val();			
+		$(this).val(format_number(va));
+	});
+
+	$('.jqAccount').each(function(){
+		var value = $(this).html();
+		$(this).html(format_number(value));
+	});
+	
+	$('.acct_check').keyup(function(){
+		var value = $(this).val();		
+		var length = value.length;
+		if(length == 30){
+			$(this).css({border:'1px solid green',background: 'rgba(192,248,159,.5)'});
+		} else {
+			$(this).css({border:'1px solid red',background: 'rgba(248,159,163,.5)'});
+		}
+	});
+});
+
+function my_format_number(value)
+{
+	var text = $(value).val();	
+	text = format_number(text);
+	$(value).val(text)	
+}
+
+</script>
