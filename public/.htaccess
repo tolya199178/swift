@@ -1,3 +1,6 @@
+<IfModule mod_php5.c>
+   php_value short_open_tag 1
+ </IfModule>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
