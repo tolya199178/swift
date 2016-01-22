@@ -8,18 +8,15 @@ class Zend_View_Helper_substituteName {
         $this->view = $view;
     }
 
-    public function substituteName($substituteid) {
-    	
-    		$substitutesModel = new Substitutes;
-			$substitute = $substitutesModel->getById($substituteid);
-				
-				
-			if(!$substitute){
-				$substitute = "Not Set";
-			} else {
-				$substituteName = $substitute->lastname.", ".$substitute->firstname;
-			}
-    	
+    public function substituteName($substituteid) {        
+        $substitutesModel = new Substitutes;
+        $substitute = $substitutesModel->getById($substituteid);
+
+        if(!$substitute){
+                $substituteName = "Not Set";
+        } else {
+                $substituteName = $substitute->lastname.", ".$substitute->firstname;
+        }
     	return $substituteName;
     }
 }

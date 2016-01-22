@@ -45,7 +45,9 @@ class UserController extends Swift_Controller_Action
    				
    				// payrate
    				$subs = $substitutesModel->getById($data['substitute']);
-   				$data['payrate'] = $subs->payrate;
+                                if($subs){
+                                    $data['payrate'] = $subs->payrate;
+                                }
    				
    				$recordsModel = new Records;
    				
@@ -108,14 +110,19 @@ class UserController extends Swift_Controller_Action
    		
    		$this->view->columns = $cols;
    		
-   		$columnValues = array();
-   		foreach($cols AS $col){
+   		$columnValues = array();                
+   		foreach($cols AS $col){                        
    			if($col <> 'id' && $col <> 'date'){
    			$columnValues[$col] = $recordsModel->getValuesForColumns($col);
    			}
    		}
    		   		
    		$this->view->columnValues = $columnValues;
+                
+                /**
+                 * Added by Anatoly
+                 */
+                $this->view->isAdmin = $this->_me->admin == 1;                
 	}
 	
 	public function leavestatementAction(){
@@ -148,9 +155,10 @@ class UserController extends Swift_Controller_Action
 		
 	}
 	
-	public function dataverificationAction(){
+	public function dataverificationAction(){                
 		$method = $this->getRequest()->getParam('method','html');
 		$start = $this->getRequest()->getParam('start');
+                $locaion = (int)$this->getRequest()->getParam('locaion');                
 		$end = false;
 		if(strstr($start, '~')){
 			$dates = explode("~",$start);
@@ -164,9 +172,14 @@ class UserController extends Swift_Controller_Action
 
 		$employeesModel = new Employees;
    		if($this->_me->admin ==1){
-   			$employees = $employeesModel->getAll();
-   		} else {
-   			$employees = $employeesModel->getAllByLocation($this->_me->location);
+                   if($locaion == 0){
+                       $employees = $employeesModel->getAll();
+                   }else{
+                       $employees = $employeesModel->getAllByLocation($locaion);
+                   }
+                    
+   		} else {                    
+                    $employees = $employeesModel->getAllByLocation($this->_me->location);
    		}
    		
    		$totalData = array();
@@ -595,5 +608,50 @@ class UserController extends Swift_Controller_Action
    		}
    		
 	}
+        
+    public function deleterecordsAction(){
+        if($this->getRequest()->isPost()){
+            $data = $this->getRequest()->getPost();
+            unset($data['method']);
+            $search = array();
+            if(trim($data['startdate']) <> ''){
+                    $startdate = date('Y-m-d', strtotime($data['startdate']));
+                    $search['startdate'] = $startdate;
+            }
+            if(trim($data['enddate']) <> ''){
+                    $enddate = date('Y-m-d', strtotime($data['enddate']));
+                    $search['enddate'] = $enddate;
+            }
+            if(trim($data['reason']) <> ''){
+                    $search['reason'] = $reason;
+            }
+            unset($data['startdate']);
+            unset($data['enddate']);
+            foreach($data AS $key => $value){
+                    if(trim($value) <> ''){
+                            $search[$key] = $value;
+                    }
+            }            
+            $recordsModel = new Records;
+            if($this->_me->admin == 1){
+                    $recordsSelect = $recordsModel->getAll(null, null, $search);
+            } else {
+                    $recordsSelect = $recordsModel->getAllByLocation($this->_me->location,null,$search);
+            }
+            $records = $recordsModel->fetchAll($recordsSelect);
+            $ids = [];
+            if(count($records)>0){
+                foreach($records as $recode){
+                    $ids[] = $recode['id'];
+                }
+            }
+            if(count($ids) > 0){
+                $recordsModel->deleteMultiple(implode(",", $ids));
+            }            
+            $searchString = urlencode(base64_encode(serialize($search)));            
+            $this->_redirect("/editrecords/1/date/desc/".$searchString);
+            die();
+        }
+    }    
     
 }

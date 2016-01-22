@@ -10,7 +10,11 @@
   <script type='text/javascript'>
   	$(function(){
   		$('.datepicker').datepicker({'dateFormat':'yy-mm-dd'});
-  		$('.datepicker_limited').datepicker({'dateFormat':'yy-mm-dd', 'minDate':'<?=$this->siteSettings->minDate;?>', 'maxDate':'<?=$this->siteSettings->maxDate;?>',
+  		$('.datepicker_limited').datepicker({'dateFormat':'yy-mm-dd',
+                    <?php if($this->user->admin !=1){ ?>
+                        'minDate':'<?=$this->siteSettings->minDate;?>', 
+                        'maxDate':'<?=$this->siteSettings->maxDate;?>',
+                    <?php };?>    
 		  	onSelect: function(date) {
 		            $('select[name=days]').focus();
 		        }

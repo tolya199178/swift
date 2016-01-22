@@ -15,8 +15,18 @@ select{
 		var sure = confirm("Delete these records?");
 		if(sure){
 			$.post("/editrecords",{ method: 'remove', ids: ids },function(data){
-				window.location.href=window.location.href;
+				window.location.href=window.  location.href;
 			});
+		} else {
+			return false;
+		}
+	}
+        
+	function deleteAllRecords(){		
+		var sure = confirm("Delete All Recode?");
+		if(sure){
+                    $("form[name=search]").attr("action","/deleterecords")
+                    $("form[name=search]").get(0).submit();
 		} else {
 			return false;
 		}
@@ -58,6 +68,7 @@ select{
 <div class='howto' style='height:auto !important; '>
 <div style='float:left;'>
 	<input type='button' value='Delete Selected' onClick="deleteRecords()">
+        <input type='button' value='Delete All Serche Result' onClick="deleteAllRecords()">
 </div>
  <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
  <div style='float:right;'>
@@ -69,111 +80,111 @@ select{
 
 
  <div style='padding:10px; float:left;'>
- 	<form method='post' action="">
+ 	<form method='post' action="" name="search">
  			<input type='hidden' name='method' value='search' >
-<table>
-	<tr>
-		<td>
-			<b>Start Date</b><br />
-			<input type='text' name='startdate' style='width:150px;' class='datepicker' value="<?=@$this->search->startdate;?>" readonly>
-		</td>
-		<td>
-			<b>End Date</b><br />
-			<input type='text' name='enddate' style='width:150px;' class='datepicker'  value="<?=@$this->search->enddate;?>"  readonly>
-		</td>
-		 <? if($this->user->admin == 1){ ?>
-		<td>
-			<b>Location</b><br />
-			<select name='location' style='width:150px;'>
-				<option value="">Any</option>
-					<? 
-					
-					foreach($this->locations AS $location){ 
-					
-					?>
-							<option value="<?=$location->id;?>" <? if(@$this->search->location == $location->id){ echo "selected"; } ?>><?=$this->locationName($location->id);?></option>
-					<? } ?>
-					</optgroup>
-				</select>
-		</td>
- <? } ?>
+            <table>
+                    <tr>
+                            <td>
+                                    <b>Start Date</b><br />
+                                    <input type='text' name='startdate' style='width:150px;' class='datepicker' value="<?=@$this->search->startdate;?>" readonly>
+                            </td>
+                            <td>
+                                    <b>End Date</b><br />
+                                    <input type='text' name='enddate' style='width:150px;' class='datepicker'  value="<?=@$this->search->enddate;?>"  readonly>
+                            </td>
+                             <? if($this->user->admin == 1){ ?>
+                            <td>
+                                    <b>Location</b><br />
+                                    <select name='location' style='width:150px;'>
+                                            <option value="">Any</option>
+                                                    <? 
+
+                                                    foreach($this->locations AS $location){ 
+
+                                                    ?>
+                                                                    <option value="<?=$location->id;?>" <? if(@$this->search->location == $location->id){ echo "selected"; } ?>><?=$this->locationName($location->id);?></option>
+                                                    <? } ?>
+                                                    </optgroup>
+                                            </select>
+                            </td>
+             <? } ?>
 
 
-		<td>
-			<b>Employee</b><br />
-			
-			<select name='employee' style='width:150px;'>
-			<option value="">Any</option>
-					<? foreach($this->employees AS $employee){ 	?>
-							<option value="<?=$employee->id;?>" <? if(@$this->search->employee == $employee->id){ echo "selected"; } ?>><?=$employee->lastname;?>, <?=$employee->firstname;?></option>
-					<? } ?>
-					</optgroup>
-				</select>
- 			
-		</td>
-		<td>
-			<b>Substitute</b><br />
-			<select name='substitute' style='width:150px;'>
-				<option value="">Any</option>
-					<? $location = 0;
-					foreach($this->substitutes AS $substitute){  ?>
-							<option value="<?=$substitute->id;?>" <? if(@$this->search->substitute == $substitute->id){ echo "selected"; } ?>><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
-					<? } ?>
-					</optgroup>
-				</select>
-		</td>
-		<td>
-		<b>Reason</b><br />
- 		<select id='reason' name='reason' style='width:100px;'>
- 					<option value="">Any</option>
-					<option <? if(@$this->search->reason == 'Sick'){ echo "selected"; } ?>>Sick</option>
-					<option <? if(@$this->search->reason == 'Personal'){ echo "selected"; } ?>>Personal</option>
-					<option <? if(@$this->search->reason == 'Vacation'){ echo "selected"; } ?>>Vacation</option>
-					<option <? if(@$this->search->reason == 'Maternity'){ echo "selected"; } ?>>Maternity</option>
-					<option <? if(@$this->search->reason == 'Vacancy'){ echo "selected"; } ?>>Vacancy</option>
-					<option <? if(@$this->search->reason == 'Prof. Learning'){ echo "selected"; } ?>>Prof. Learning</option>
-					<option <? if(@$this->search->reason == 'Jury Duty'){ echo "selected"; } ?>>Jury Duty</option>
-					<option <? if(@$this->search->reason == 'Subpoena'){ echo "selected"; } ?>>Subpoena</option>
-					<option <? if(@$this->search->reason == 'Military'){ echo "selected"; } ?>>Military</option>
-					<option <? if(@$this->search->reason == 'Religious Holiday'){ echo "selected"; } ?>>Religious Holiday</option>
-					<option <? if(@$this->search->reason == 'Br-S Spouse'){ echo "selected"; } ?>>Br-S Spouse</option>
-					<option <? if(@$this->search->reason == 'Br-S Parent [In-Law]'){ echo "selected"; } ?>>Br-S Parent [In-Law]</option>
-					<option <? if(@$this->search->reason == 'Br-S Child [In-Law]'){ echo "selected"; } ?>>Br-S Child [In-Law]</option>
-					<option <? if(@$this->search->reason == 'Br-S Sibling [In-Law]'){ echo "selected"; } ?>>Br-S Sibling [In-Law]</option>
-					<option <? if(@$this->search->reason == 'Br-S Grandparent'){ echo "selected"; } ?>>Br-S Grandparent</option>
-					<option <? if(@$this->search->reason == 'Br-S Rel.-In-Care'){ echo "selected"; } ?>>Br-S Rel.-In-Care</option>
-					<option <? if(@$this->search->reason == 'Br-Personal'){ echo "selected"; } ?>>Br-Personal</option>
-					<option <? if(@$this->search->reason == 'Other - EXPLAIN'){ echo "selected"; } ?>>Other - EXPLAIN</option>
-					<option <? if(@$this->search->reason == 'Professional'){ echo "selected"; } ?>>Professional</option>
-					<option <? if(@$this->search->reason == 'Leave W/O Pay'){ echo "selected"; } ?>>Leave W/O Pay</option>
-					<option <? if(@$this->search->reason == 'W/C (Payroll Use Only)'){ echo "selected"; } ?>>W/C (Payroll Use Only)</option>
-					<option <? if(@$this->search->reason == 'SLB (Payroll Use Only)'){ echo "selected"; } ?>>SLB (Payroll Use Only)</option>
-				</select>
- 		</td>
- 		 <? if($this->user->admin == 1){ ?>
- 		<td>
- 		<b>Leave Form</b><br />
- 			<select name='leave_form' style='width:100px;'>
- 				<option value=''>Any</option>
- 				<option value='0' <? if($this->search->leave_form === 0){ echo "selected"; } ?>>No</option>
- 				<option value='1' <? if($this->search->leave_form == 1){ echo "selected"; } ?>>Yes</option>
- 			</select>
- 		</td>
- 		 <? } ?>
- 		<td>
- 		<b>Acct #1</b><br />
- 			<input type='text' name='acct' style='width:100px;'>
+                            <td>
+                                    <b>Employee</b><br />
 
- 		</td>
-		<td><br />
-		<input type='submit' value='Filter' style='margin-top:5px;padding:5px; font-size:14px;'>
+                                    <select name='employee' style='width:150px;'>
+                                    <option value="">Any</option>
+                                                    <? foreach($this->employees AS $employee){ 	?>
+                                                                    <option value="<?=$employee->id;?>" <? if(@$this->search->employee == $employee->id){ echo "selected"; } ?>><?=$employee->lastname;?>, <?=$employee->firstname;?></option>
+                                                    <? } ?>
+                                                    </optgroup>
+                                            </select>
 
-		<a href="/editrecords">
-		<input type='button' style='margin-top:5px;padding:5px; font-size:14px;' value="Clear">
-		</a>
-		</td>
-	</tr>
-</table> 			
+                            </td>
+                            <td>
+                                    <b>Substitute</b><br />
+                                    <select name='substitute' style='width:150px;'>
+                                            <option value="">Any</option>
+                                                    <? $location = 0;
+                                                    foreach($this->substitutes AS $substitute){  ?>
+                                                                    <option value="<?=$substitute->id;?>" <? if(@$this->search->substitute == $substitute->id){ echo "selected"; } ?>><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
+                                                    <? } ?>
+                                                    </optgroup>
+                                            </select>
+                            </td>
+                            <td>
+                            <b>Reason</b><br />
+                            <select id='reason' name='reason' style='width:100px;'>
+                                                    <option value="">Any</option>
+                                                    <option <? if(@$this->search->reason == 'Sick'){ echo "selected"; } ?>>Sick</option>
+                                                    <option <? if(@$this->search->reason == 'Personal'){ echo "selected"; } ?>>Personal</option>
+                                                    <option <? if(@$this->search->reason == 'Vacation'){ echo "selected"; } ?>>Vacation</option>
+                                                    <option <? if(@$this->search->reason == 'Maternity'){ echo "selected"; } ?>>Maternity</option>
+                                                    <option <? if(@$this->search->reason == 'Vacancy'){ echo "selected"; } ?>>Vacancy</option>
+                                                    <option <? if(@$this->search->reason == 'Prof. Learning'){ echo "selected"; } ?>>Prof. Learning</option>
+                                                    <option <? if(@$this->search->reason == 'Jury Duty'){ echo "selected"; } ?>>Jury Duty</option>
+                                                    <option <? if(@$this->search->reason == 'Subpoena'){ echo "selected"; } ?>>Subpoena</option>
+                                                    <option <? if(@$this->search->reason == 'Military'){ echo "selected"; } ?>>Military</option>
+                                                    <option <? if(@$this->search->reason == 'Religious Holiday'){ echo "selected"; } ?>>Religious Holiday</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Spouse'){ echo "selected"; } ?>>Br-S Spouse</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Parent [In-Law]'){ echo "selected"; } ?>>Br-S Parent [In-Law]</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Child [In-Law]'){ echo "selected"; } ?>>Br-S Child [In-Law]</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Sibling [In-Law]'){ echo "selected"; } ?>>Br-S Sibling [In-Law]</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Grandparent'){ echo "selected"; } ?>>Br-S Grandparent</option>
+                                                    <option <? if(@$this->search->reason == 'Br-S Rel.-In-Care'){ echo "selected"; } ?>>Br-S Rel.-In-Care</option>
+                                                    <option <? if(@$this->search->reason == 'Br-Personal'){ echo "selected"; } ?>>Br-Personal</option>
+                                                    <option <? if(@$this->search->reason == 'Other - EXPLAIN'){ echo "selected"; } ?>>Other - EXPLAIN</option>
+                                                    <option <? if(@$this->search->reason == 'Professional'){ echo "selected"; } ?>>Professional</option>
+                                                    <option <? if(@$this->search->reason == 'Leave W/O Pay'){ echo "selected"; } ?>>Leave W/O Pay</option>
+                                                    <option <? if(@$this->search->reason == 'W/C (Payroll Use Only)'){ echo "selected"; } ?>>W/C (Payroll Use Only)</option>
+                                                    <option <? if(@$this->search->reason == 'SLB (Payroll Use Only)'){ echo "selected"; } ?>>SLB (Payroll Use Only)</option>
+                                            </select>
+                            </td>
+                             <? if($this->user->admin == 1){ ?>
+                            <td>
+                            <b>Leave Form</b><br />
+                                    <select name='leave_form' style='width:100px;'>
+                                            <option value=''>Any</option>
+                                            <option value='0' <?  if(@$this->search->leave_form === 0){ echo "selected"; } ?>>No</option>
+                                            <option value='1' <? if(@$this->search->leave_form == 1){ echo "selected"; } ?>>Yes</option>
+                                    </select>
+                            </td>
+                             <? } ?>
+                            <td>
+                            <b>Acct #1</b><br />
+                                    <input type='text' name='acct' style='width:100px;'>
+
+                            </td>
+                            <td><br />
+                            <input type='submit' value='Filter' style='margin-top:5px;padding:5px; font-size:14px;'>                
+
+                            <a href="/editrecords">
+                            <input type='button' style='margin-top:5px;padding:5px; font-size:14px;' value="Clear">
+                            </a>
+                            </td>
+                    </tr>
+            </table> 		
  			
  	</form>
  </div>
@@ -313,14 +324,16 @@ select{
  			<td>
  				<? if($editRwo):?>
  					<select name='substitute' style='width:100px;' >	
+                                            <?php if(!$record->substitute){ ?>
+                                                <option value="">Not Set</option>
+                                            <?php } ?>
 						<? 
 							$location = 0;
 						foreach($this->substitutes AS $substitute){ 
 						
 						?>
 								<option value="<?=$substitute->id;?>" <? if($record->substitute == $substitute->id){ echo "selected"; } ?>><?=$substitute->lastname;?>, <?=$substitute->firstname;?></option>
-						<? } ?>
-						</optgroup>
+						<? } ?>						
 					</select>
  				<? else:?>
  					<?php echo $record->slastname.', '.$record->sfirstname;?>
@@ -407,14 +420,9 @@ select{
  			
  			<? if($editRwo):?>
  				<b>#1</b>&nbsp;&nbsp;<input type='text' name='acct' class='acct_check' maxlength='30' style='font-size:10px; width:165px;' value="<?=$nroAcct?>" onkeyup="my_format_number(this)" >
- 				<br /> 				
- 				<b>#2</b>&nbsp;&nbsp;<input type='text' name='acct_two' class='acct_check' maxlength='30' style='font-size:10px; width:165px;margin-top:3px;' value="<?=$nroAcctTwo?>" onkeyup="my_format_number(this)" >
+ 				
  			<? else:?> 				
  				<b>#1</b>&nbsp;&nbsp;<label class="jqAccount" ><?=$nroAcct?></label>
- 				<?php if(!empty($nroAcctTwo)):?>
-	 				<br /> 				
-	 				<b>#2</b>&nbsp;&nbsp;<label class="jqAccount" ><?=$nroAcctTwo?></label>
- 				<?php endif;?>
  			<? endif;?>
  			<br />
  			<? if($editRwo):?>

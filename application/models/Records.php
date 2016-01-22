@@ -169,7 +169,7 @@ class Records extends Zend_DB_Table
         $select->setIntegrityCheck(false);
         $select->joinInner(array('e' => 'employees'), "r.employee = e.id", null);
         $select->joinInner(array('l' => 'locations'), "r.location = l.id", null);
-        $select->joinInner(array('s' => 'substitutes'), "r.substitute = s.id", null);
+        $select->joinLeft(array('s' => 'substitutes'), "r.substitute = s.id", null);
         
         if($sort){
         	if($sort == 'employee')
@@ -209,8 +209,7 @@ class Records extends Zend_DB_Table
         	foreach($search AS $key=>$value){
         		$select->where("r.$key = '$value' ");
         	}	
-        }
-        
+        }        
         return $select;        
     }
     
@@ -268,7 +267,7 @@ class Records extends Zend_DB_Table
         $select->from(array('r' => $this->_name), $cols);
         $select->setIntegrityCheck(false);
         $select->joinInner(array('e' => 'employees'), "r.employee = e.id", null);
-        $select->joinInner(array('s' => 'substitutes'), "r.substitute = s.id", null);
+        $select->joinleft(array('s' => 'substitutes'), "r.substitute = s.id", null);
         
         $select->where('r.location=?',$location);
                       
@@ -338,7 +337,7 @@ class Records extends Zend_DB_Table
         return true;
     }
     
-     function deleteMultiple($ids){
+    function deleteMultiple($ids){
 		$idArray = explode(",",$ids);
 		foreach($idArray AS $id){
 			if(trim($id) <> ''){
@@ -348,5 +347,11 @@ class Records extends Zend_DB_Table
        
         return true;
     }
+    
+    function deleteRecodeBycond(){
+        
+    }
+    
+    
     
 }

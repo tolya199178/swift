@@ -129,7 +129,8 @@
 		<script type='text/javascript'>
 			function getDataVerification(type){
 				var start = $('#verification_month').val();
-				window.location.href = "/dataverification/"+start+"/"+type;
+                                var location = $('#verification_location').val();                                
+				window.location.href = "/dataverification/"+start+"/"+(location?location:"any")+"/"+type;
 			}
 		</script>
 			<select id='verification_month'>
@@ -145,6 +146,18 @@
 					}
 				?>
 			</select>
+                        <?php if($this->user->admin == 1){?>
+                             
+                            &nbsp;&nbsp;
+                            <select id='verification_location'>
+                                <option value="">Any Location</option>
+				<?php
+                                    foreach($this->locations as $row){
+                                        printf('<option value="%s">%s</option>', $row['id'], $row['name']);
+                                    }
+				?>
+                            </select>
+                        <?php }?>
 		</td>
 		<td style='text-align:center;'><a href="javascript:void(0);" onClick="getDataVerification('html');"><img src="/images/view.png"></a></td>
 		<td style='text-align:center;'><a href="javascript:void(0);" onClick="getDataVerification('pdf');"><img src="/images/print.png"></a></td>

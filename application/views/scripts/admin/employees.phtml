@@ -33,11 +33,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Acct #2</td>
+<!--			<td>Acct #2</td>
 			<td>
 				<input type='text' name='account_number_two' class='account_number_two' style='width:280px;' value="<?=@$this->data['account_number_two'];?>" >
-			</td>
-			<td style='text-align:right;'>Title Paid</td>
+			</td>-->
+			<td style=''>Title Paid</td>
 			<td>
 				<select name='paid' style='width:200px;'>
 					<option value="">Select One</option>
@@ -78,7 +78,7 @@
 				<td><?=$employee->position;?></td>
 				<td>
 					<b>#1</b>&nbsp;&nbsp;<label class="jqAccount"><?=$employee->account_number;?></label>
-					<? echo !empty($employee->account_number_two) ? '<br /> <b>#2</b>&nbsp;&nbsp;<label class="jqAccount">'.$employee->account_number_two.'</label>' : '';?>
+					<?/* echo !empty($employee->account_number_two) ? '<br /> <b>#2</b>&nbsp;&nbsp;<label class="jqAccount">'.$employee->account_number_two.'</label>' : '';*/?>
 				</td>				
 				<td><?=$employee->paid;?></td>
 				<td><?=$employee->cp_id;?></td>
