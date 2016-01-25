@@ -68,7 +68,23 @@ select{
 <div class='howto' style='height:auto !important; '>
 <div style='float:left;'>
 	<input type='button' value='Delete Selected' onClick="deleteRecords()">
-        <input type='button' value='Delete All Serche Result' onClick="deleteAllRecords()">
+        <?php             
+            $ary = array();
+            if($this->search){
+                $searchArray = (array)$this->search;
+                $ary = array_diff(array_values($searchArray), array(""));
+            }            
+            if(count($ary)> 0 ){
+                ?>
+                    <input type='button' value='Delete All Serche Result' onClick="deleteAllRecords()">
+                <?php
+            }else{
+                ?>
+                    
+                <?php
+            }            
+        ?>
+        
 </div>
  <?= $this->paginationControl($this->records, 'Sliding', 'pagination_control.phtml'); ?>
  <div style='float:right;'>
@@ -406,7 +422,7 @@ select{
  		</td> 		
  		<td> 			 		
  			<?
- 				if($record->substitute == 129)
+ 				if($record->substitute == 129 || !$record->substitute)
  				{
  					$nroAcct = '5-000-0-0000-0000-00000-0000-0';
  				}

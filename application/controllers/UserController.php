@@ -336,7 +336,7 @@ class UserController extends Swift_Controller_Action
 
 	        		$records = $recordsModel->searchByArray($data);	        		
 	        		
-	        		$csv ="RecordID, Date, EmployeeFirst,EmployeeLast,EmpID,TitlePaid,EmpAcct#1,EmpAcct#2,Percent#1,Percent#2,Location,SubFirst,SubLast,SubCert,Payrate,SubSS,Reason,Note,LeaveForm,SubID";
+	        		$csv ="RecordID, Date, EmployeeFirst,EmployeeLast,EmpID,TitlePaid,EmpAcct#1,Percent#1,Percent#2,Location,SubFirst,SubLast,SubCert,Payrate,SubSS,Reason,Note,LeaveForm,SubID";
 	        		$csv.="\n";	        		
 	        		foreach($records AS $record){
 	        			
@@ -356,8 +356,14 @@ class UserController extends Swift_Controller_Action
 	        			$csv .= $record->elastname.",";
 	        			$csv .= $record->ecp_id.",";
 	        			$csv .= $record->epaid.",";
-	        			$csv .= '="'.$acctNumber.'",';
-	        			$csv .= '="'.$acctNumberTwo.'",';
+                                        
+                                        if($record->substitute == 129 || !$record->substitute)
+                                        {
+                                            $acctNumber = '5-000-0-0000-0000-00000-0000-0';
+                                        }
+                                        
+	        			$csv .= '="'.$acctNumber.'",';	
+                                        
 	        			$csv .= $record->percent.",";
 	        			$csv .= $record->percent_two.",";
 	        			$csv .= $record->lname.",";
@@ -483,9 +489,9 @@ class UserController extends Swift_Controller_Action
 							if(isset($acct_two[$i]))
 								$data['acct_two'] = $acct_two[$i];
 
-							if($data['substitute'] == 129){
-								$data['acct'] = '5-000-0-0000-0000-00000-0000-0';								                
-							}
+//							if($data['substitute'] == 129){
+//								$data['acct'] = '5-000-0-0000-0000-00000-0000-0';								                
+//							}
 							
 							if(isset($payrate))
 								$data['payrate'] = $payrate[$i];
@@ -517,8 +523,8 @@ class UserController extends Swift_Controller_Action
 				$id = $data['id'];
 				unset($data['id']);
 
-				if($data['substitute'] == 129){
-					$data['acct'] = '5-000-0-0000-0000-00000-0000-0';
+				if($data['substitute'] == 129){                                    
+                                    $data['acct'] = '5-000-0-0000-0000-00000-0000-0';
 				}
 
 				$recordsModel->updateRecord($id,$data);
