@@ -94,7 +94,7 @@
 		<script type='text/javascript'>
 			function getLeaveStatement(type){
 				var id = $('#leavestatement_employee').val();
-				window.location.href = "/leavestatement/"+id+"/"+type;
+				window.location.href = "/leavestatement/"+id+"/any/"+type;
 			}
 		</script>
 		<select name='employee' id='leavestatement_employee' style='width:450px;'>
@@ -130,7 +130,7 @@
 			function getDataVerification(type){
 				var start = $('#verification_month').val();
                                 var location = $('#verification_location').val();                                
-				window.location.href = "/dataverification/"+start+"/"+(location?location:"any")+"/"+type;
+				window.location.href = "/dataverification/"+start+""+(location?location:"any")+"/"+type;
 			}
 		</script>
 			<select id='verification_month'>
@@ -170,7 +170,7 @@
 			function getDataVerificationByDate(type){
 				var start = $('#ver_start').val();
 				var end = $('#ver_end').val();
-				window.location.href = "/dataverification/"+start+"~"+end+"/"+type;
+				window.location.href = "/dataverification/"+start+"~"+end+"/any/"+type;
 			}
 		</script>
 			<table>

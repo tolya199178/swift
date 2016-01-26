@@ -1,107 +1,111 @@
-<?
+<?php
 $method = $this->method;
 $employee = $this->employee;
 $records = $this->records;
 $totalDays = 0;
 ?>
-<? if($method == 'html' || $method == 'pdf'){?>
-	<style type='text/css'>
-		#page{
-			font-family: Arial, sans-serif;
-		}
-	</style>
-	<div id='page'>
-	
-	 	<table style='width:100%;'>
-	 		<tr>
-	 			<td><h1>Leave Statement</h1>
-						<h2><?=$employee->firstname;?> <?=$employee->lastname;?></h2>
-				</td>
-				<? if($method == 'pdf'){ ?>
-	 			<td style='text-align:right;'><img style='height:80px;' src="<?=APPLICATION_PATH."/../public/images/logo.png";?>"></td>
-	 				<? } ?> 
-	 		</tr>
-	 	</table>
+<?php if ($method == 'html' || $method == 'pdf') { ?>
+    <style type='text/css'>
+        #page{
+            font-family: Arial, sans-serif;
+        }
+    </style>
+    <div id='page'>
 
-	
-	<? if(count($records) == 0){ ?>
-		<h1 style='text-align:center;' class='howto'>No Records to Display.</h1>
-	<? } ?>
-	<? 
-		$editedRecords = array();
-	foreach($records AS $record){
-		$editedRecords[$record->reason][]=$record;
-	}
-	ksort($editedRecords);
+        <table style='width:100%;'>
+            <tr>
+                <td><h1>Leave Statement</h1>
+                    <h2><?php echo  $employee->firstname; ?> <?php echo $employee->lastname; ?></h2>
+                </td>
+                <?php if ($method == 'pdf') { ?>
+                    <td style='text-align:right;'><img style='height:80px;' src="<?php echo APPLICATION_PATH."/../public/images/logo.png"; ?>"></td>
+                <?php } ?> 
+            </tr>
+        </table>
 
-	foreach($editedRecords AS $type => $records){ ?>
-		
-	<table class='zebra' style='width:100%; border-collapse:collapse;' border='1'>
-	<thead>
-	<tr style='background: #000; color:#fff;'>
-		<td>Date</td>
-		<td>Reason</td>
-		<td>Leave Taken</td>
-	</tr>
-	</thead>
-	<?
-		foreach($records aS $record){
-	?>
-		<tr>
-			<td><?=$record->date;?></td>
-			<td><?=$record->reason;?> <? if($record->reason == 'Other - EXPLAIN'){ echo " : ".$record->notes; } ?></td>
-			<td><?=number_format($record->percent/100,2);?></td>
-		</tr>
-	<?	
-	$totalDays = $totalDays+number_format($record->percent/100,2);
-		}
-		?>
-		</table>
-		<div style=' background: #2a2a2a; color:#fff; margin-bottom:20px;'><table style='width:50%; margin:auto;'><tr><td><h4 style='margin:0; padding:0px;'>Summary for <?=$type;?></h4></td><td style='text-align:right;'><h4 style='padding:0px; margin:0;'><?=count($records);?></h4></td></tr></table> </div>
-		<?
-			
-		
-	} ?>
-	<table width='100%' cellpadding='3' style='background:#fff; border-collapse:collapse;' border='1'>
-		<tr>
-			<td style='width:50%;'>Leave Taken</td><td style='text-align:right;'><?=$totalDays;?></td>
-		</tr>
-	</table>
-	
-	</div>	
-	
 
-<?
+        <?php if (count($records) == 0) { ?>
+            <h1 style='text-align:center;' class='howto'>No Records to Display.</h1>
+        <?php } ?>
+        <?php
+        $editedRecords = array();
+        foreach ($records AS $record) {
+            $editedRecords[$record->reason][] = $record;
+        }
+        ksort($editedRecords);
+
+        foreach ($editedRecords AS $type => $records) {
+            ?>
+
+            <table class='zebra' style='width:100%; border-collapse:collapse;' border='1'>
+                <thead>
+                    <tr style='background: #000; color:#fff;'>
+                        <td>Date</td>
+                        <td>Reason</td>
+                        <td>Leave Taken</td>
+                    </tr>
+                </thead>
+                <?php
+                foreach ($records aS $record) {
+                    ?>
+                    <tr>
+                        <td><?php echo $record->date; ?></td>
+                        <td><?php echo $record->reason; ?> <?php if ($record->reason == 'Other - EXPLAIN') {
+                        echo " : " . $record->notes;
+                    } ?></td>
+                        <td><?php echo number_format($record->percent/100, 2); ?></td>
+                    </tr>
+                    <?php
+                    $totalDays = $totalDays + number_format($record->percent / 100, 2);
+                }
+                ?>
+            </table>
+            <div style=' background: #2a2a2a; color:#fff; margin-bottom:20px;'>
+                <table style='width:50%; margin:auto;'><tr><td><h4 style='margin:0; padding:0px;'>
+                                Summary for <?php echo $type; ?></h4></td><td style='text-align:right;'><h4 style='padding:0px; margin:0;'><?php echo count($records); ?></h4></td></tr>
+                </table> 
+            </div>
+            <?php }
+        ?>
+        <table width='100%' cellpadding='3' style='background:#fff; border-collapse:collapse;' border='1'>
+            <tr>
+                <td style='width:50%;'>Leave Taken</td><td style='text-align:right;'><?php echo $totalDays; ?></td>
+            </tr>
+        </table>
+
+    </div>	
+
+
+    <?php
 }
 
-if($method=='csv'){
-			$editedRecords = array();
-			foreach($records AS $record){
-				$editedRecords[$record->reason][]=$record;
-			}
-			ksort($editedRecords);
+if ($method == 'csv') {
+    $editedRecords = array();
+    foreach ($records AS $record) {
+        $editedRecords[$record->reason][] = $record;
+    }
+    ksort($editedRecords);
 
-	$csv = "id,date,employee lastname,employee firstname,location,substitute lastname,substitute firstname,reason,notes,percent,leave_form,user,date_created\n";
-	
-	foreach($editedRecords AS $type => $records){
-		foreach($records AS $record){
-			$csv .= $record->id.",";
-			$csv .= $record->date.",";
-			$csv .= $this->employeeName($record->employee).',';
-			$csv .= $this->locationName($record->location).",";
-			$csv .= $this->substituteName($record->substitute).",";
-			$csv .= $record->reason.",";
-			$csv .= str_replace(",","",$record->notes).",";
-			$csv .= $record->percent.",";
-			$csv .= $record->leave_form.",";
-			$csv .= $this->userName($record->user).",";
-			$csv .= $record->date_created.",";
-			$csv .= "\n";
-		}
-	}
-	header('Content-Type: application/csv');
-				header('Content-Disposition: attachment; filename=Leave_Statement-'.$employee->firstname."-".$employee->lastname."-".date('Y-m-d').".".$method);
-				header('Pragma: no-cache');
-	echo $csv;
+    $csv = "id,date,employee lastname,employee firstname,location,substitute lastname,substitute firstname,reason,notes,percent,leave_form,user,date_created\n";
 
+    foreach ($editedRecords AS $type => $records) {
+        foreach ($records AS $record) {
+            $csv .= $record->id . ",";
+            $csv .= $record->date . ",";
+            $csv .= $this->employeeName($record->employee) . ',';
+            $csv .= $this->locationName($record->location) . ",";
+            $csv .= $this->substituteName($record->substitute) . ",";
+            $csv .= $record->reason . ",";
+            $csv .= str_replace(",", "", $record->notes) . ",";
+            $csv .= $record->percent . ",";
+            $csv .= $record->leave_form . ",";
+            $csv .= $this->userName($record->user) . ",";
+            $csv .= $record->date_created . ",";
+            $csv .= "\n";
+        }
+    }
+    header('Content-Type: application/csv');
+    header('Content-Disposition: attachment; filename=Leave_Statement-' . $employee->firstname . "-" . $employee->lastname . "-" . date('Y-m-d') . "." . $method);
+    header('Pragma: no-cache');
+    echo $csv;
 }

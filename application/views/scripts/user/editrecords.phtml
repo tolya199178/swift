@@ -15,7 +15,7 @@ select{
 		var sure = confirm("Delete these records?");
 		if(sure){
 			$.post("/editrecords",{ method: 'remove', ids: ids },function(data){
-				window.location.href=window.  location.href;
+				window.location.href=window.location.href;
 			});
 		} else {
 			return false;
@@ -24,13 +24,18 @@ select{
         
 	function deleteAllRecords(){		
 		var sure = confirm("Delete All Recode?");
-		if(sure){
-                    $("form[name=search]").attr("action","/deleterecords")
+		if(sure){                    
+                    $("form[name=search]").attr("action","/editrecords")
+                    $("form[name=search]").get(0).reset();
                     $("form[name=search]").get(0).submit();
 		} else {
 			return false;
 		}
 	}
+        
+        function clearSearch(){
+            window.open("/editrecords", "_self");
+        }
 
 	function format_number(text)
   	{
@@ -196,7 +201,7 @@ select{
                             <input type='submit' value='Filter' style='margin-top:5px;padding:5px; font-size:14px;'>                
 
                             <a href="/editrecords">
-                            <input type='button' style='margin-top:5px;padding:5px; font-size:14px;' value="Clear">
+                                <input type='button' style='margin-top:5px;padding:5px; font-size:14px;' value="Clear" onClick="clearSearch()">
                             </a>
                             </td>
                     </tr>
