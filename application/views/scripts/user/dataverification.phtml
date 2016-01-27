@@ -13,7 +13,7 @@ $totalData = $this->totalData;
         <table style='width:100%;'>
             <tr>
                 <td>
-                    <h1>Data Verification (<?php if ($this->start && $this->end) { ?><?php echo date('M d, Y', strtotime($this->start)); ?> - <?php echo date('M d, Y', strtotime($this->end)); ?><?php } else { ?><?php echodate('M Y', strtotime($this->start)); ?><?php } ?>)</h1>
+                    <h1>Data Verification (<?php if ($this->start && $this->end) { ?><?php echo date('M d, Y', strtotime($this->start)); ?> - <?php echo date('M d, Y', strtotime($this->end)); ?><?php } else { ?><?php echo date('M Y', strtotime($this->start)); ?><?php } ?>)</h1>
                 </td>
                 <?php if ($method == 'pdf') { ?>
                     <td style='text-align:right;'><img style='height:80px;' src="<?php echo APPLICATION_PATH . "/../public/images/logo.png"; ?>"></td>
