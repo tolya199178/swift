@@ -26,7 +26,7 @@ $totalData = $this->totalData;
         ?>
             <?php if (count($data['records']) > 0) { ?>
                 <?php 
-                    if($lineBreakFlag == true){
+                    if($lineBreakFlag == true && $this->end){
                         echo '<p style="page-break-after:always;"></p>';
                     }
                     $lineBreakFlag = true;
